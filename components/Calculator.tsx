@@ -33,8 +33,9 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900">Your property</h2>
 
-        <label className="mt-4 block text-sm font-medium text-slate-700">State</label>
+        <label htmlFor="adu-state" className="mt-4 block text-sm font-medium text-slate-700">State</label>
         <select
+          id="adu-state"
           value={stateSlug}
           onChange={(e) => setStateSlug(e.target.value)}
           className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-slate-900 focus:border-emerald-500 focus:outline-none"
@@ -44,12 +45,13 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
           ))}
         </select>
 
-        <label className="mt-4 block text-sm font-medium text-slate-700">ADU type</label>
-        <div className="mt-1 grid grid-cols-2 gap-2">
+        <span id="adu-type-label" className="mt-4 block text-sm font-medium text-slate-700">ADU type</span>
+        <div role="group" aria-labelledby="adu-type-label" className="mt-1 grid grid-cols-2 gap-2">
           {ADU_TYPES.map((t) => (
             <button
               key={t.slug}
               type="button"
+              aria-pressed={aduType === t.type}
               onClick={() => setAduType(t.type)}
               className={`rounded-lg border px-3 py-2 text-sm transition ${
                 aduType === t.type
@@ -62,12 +64,14 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
           ))}
         </div>
 
-        <label className="mt-4 flex items-center justify-between text-sm font-medium text-slate-700">
+        <label htmlFor="adu-size" className="mt-4 flex items-center justify-between text-sm font-medium text-slate-700">
           <span>Size</span>
           <span className="font-semibold text-slate-900">{sqft} sq ft</span>
         </label>
         <input
+          id="adu-size"
           type="range" min={200} max={1200} step={50} value={sqft}
+          aria-label="ADU size in square feet"
           onChange={(e) => setSqft(Number(e.target.value))}
           className="mt-2 w-full accent-emerald-600"
         />
