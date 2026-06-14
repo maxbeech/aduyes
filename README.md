@@ -53,12 +53,14 @@ add a Vercel Function (`app/api/lead/route.ts`) that writes leads to a datastore
 
 ## Vercel / free-tier strategy
 
-Every page is **statically generated (SSG)** at build time from in-repo data and served as
-immutable assets from Vercel's CDN — **zero function invocations and minimal Fast Origin
-Transfer**, which is strictly more free-tier-optimal than ISR here. ISR/`revalidate` is
-deliberately *not* used: the content has no external data source, so re-rendering on a
-schedule would only burn invocations for an identical result. If a CMS is added later,
-switch blog/state pages to ISR with a long `revalidate` (e.g. 1 week).
+Every route is prerendered at build and uses **ISR with a 1-week `revalidate`** (`604800`s,
+set on each route segment). Pages are served from Vercel's **edge cache** (`x-vercel-cache:
+PRERENDER`) as prerendered HTML with immutable static assets (`max-age=31536000, immutable`)
+— minimal Fast Origin Transfer, near-zero origin compute. The long revalidation window means
+each page regenerates at most once/week (negligible invocations) while staying fresh if the
+underlying data changes and the app is redeployed. There are **no runtime external/API
+calls** (the calculator is pure client-side math), so there are no API failure modes to
+handle.
 
 ## Stack
 
