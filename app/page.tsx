@@ -36,7 +36,7 @@ export default function Home() {
           Can you build an ADU? Find out in 60 seconds.
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
-          Check your state's accessory dwelling unit rules — size, setbacks, parking and
+          Check the accessory dwelling unit rules in your state — size, setbacks, parking and
           owner-occupancy — and get an instant cost estimate for a detached ADU, garage
           conversion or junior ADU.
         </p>

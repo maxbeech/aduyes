@@ -61,7 +61,7 @@ export default async function StatePage({ params }: Props) {
         <p className="mt-3 max-w-2xl text-lg text-slate-600">
           A 700 sq ft detached ADU in {s.name} typically costs{" "}
           <strong className="text-slate-900">{formatUSD(example.low)}–{formatUSD(example.high)}</strong>{" "}
-          ({formatUSD(example.perSqftLow)}–{formatUSD(example.perSqftHigh)}/sq ft). Here's what the rules allow.
+          ({formatUSD(example.perSqftLow)}–{formatUSD(example.perSqftHigh)}/sq ft). Here is what the rules allow.
         </p>
         <span className={`mt-4 inline-block rounded-full px-3 py-1 text-sm font-medium ring-1 ${
           r.statewideLaw ? "bg-emerald-50 text-emerald-800 ring-emerald-200" : "bg-amber-50 text-amber-800 ring-amber-200"

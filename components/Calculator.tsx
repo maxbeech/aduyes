@@ -79,7 +79,7 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
           </label>
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" checked={ownerOccupies} onChange={(e) => setOwnerOccupies(e.target.checked)} className="accent-emerald-600" />
-            I'll live on the property
+            I will live on the property
           </label>
         </div>
       </div>
