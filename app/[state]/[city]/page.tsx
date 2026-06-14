@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Calculator from "@/components/Calculator";
 import { STATES, findCity, citySlug } from "@/lib/states";
 import { estimateCost, formatUSD } from "@/lib/cost";
+import { cityMetaTitle, cityMetaDescription } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -16,8 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { state, city } = await params;
   const hit = findCity(state, city);
   if (!hit) return {};
-  const title = `${hit.city} ADU Rules & Cost (2026) — Can You Build a Backyard ADU?`;
-  const description = `Accessory dwelling unit rules and cost for ${hit.city}, ${hit.state.name}: what's allowed under ${hit.state.rules.statewideLaw ? "state law" : "local zoning"}, plus a cost estimate for a detached ADU, garage conversion or JADU.`;
+  const title = cityMetaTitle(hit.city);
+  const description = cityMetaDescription(hit.state, hit.city);
   return {
     title, description,
     alternates: { canonical: `${site.url}/${hit.state.slug}/${city}` },

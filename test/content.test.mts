@@ -3,6 +3,8 @@
 import { POSTS, getPost, type Block } from "../lib/posts.ts";
 import { STATES, citySlug, findCity } from "../lib/states.ts";
 import { ADU_TYPES } from "../lib/cost.ts";
+import { site } from "../lib/site.ts";
+import { stateMetaTitle, stateMetaDescription, cityMetaTitle, cityMetaDescription, costMetaTitle, costMetaDescription } from "../lib/seo.ts";
 
 let pass = 0, fail = 0;
 function check(name: string, cond: boolean, extra = "") {
@@ -62,6 +64,28 @@ check("every city slug resolves", cityOk === cityCount, `${cityOk}/${cityCount}`
 for (const s of STATES) {
   const slugs = s.cities.map(citySlug);
   check(`${s.slug}: no city-slug collisions`, new Set(slugs).size === slugs.length);
+}
+
+// --- Page-template meta lengths (title base ≤60, description 80–160) ---
+// "base" = before the " | ADUYes" suffix the layout template appends (8 chars).
+const TITLE_MAX = 60, DESC_MAX = 160, DESC_MIN = 60;
+check(`site.description ≤ ${DESC_MAX}`, site.description.length <= DESC_MAX, `len ${site.description.length}`);
+check(`site.description ≥ ${DESC_MIN}`, site.description.length >= DESC_MIN, `len ${site.description.length}`);
+check(`site.tagline short (title fits)`, (site.name.length + 3 + site.tagline.length) <= TITLE_MAX, `len ${site.name.length + 3 + site.tagline.length}`);
+for (const s of STATES) {
+  check(`${s.slug}: state title ≤ ${TITLE_MAX}`, stateMetaTitle(s).length <= TITLE_MAX, `len ${stateMetaTitle(s).length}`);
+  const d = stateMetaDescription(s);
+  check(`${s.slug}: state desc ${DESC_MIN}-${DESC_MAX}`, d.length >= DESC_MIN && d.length <= DESC_MAX, `len ${d.length}`);
+  for (const c of s.cities) {
+    check(`${s.slug}/${citySlug(c)}: city title ≤ ${TITLE_MAX}`, cityMetaTitle(c).length <= TITLE_MAX, `"${c}" len ${cityMetaTitle(c).length}`);
+    const cd = cityMetaDescription(s, c);
+    check(`${s.slug}/${citySlug(c)}: city desc ≤ ${DESC_MAX}`, cd.length <= DESC_MAX && cd.length >= DESC_MIN, `len ${cd.length}`);
+  }
+}
+for (const t of ADU_TYPES) {
+  check(`${t.slug}: cost title ≤ ${TITLE_MAX}`, costMetaTitle(t).length <= TITLE_MAX, `len ${costMetaTitle(t).length}`);
+  const d = costMetaDescription(t);
+  check(`${t.slug}: cost desc ${DESC_MIN}-${DESC_MAX}`, d.length >= DESC_MIN && d.length <= DESC_MAX, `len ${d.length}`);
 }
 
 // --- Accuracy regression guards (fabricated statutes the funnel introduced) ---

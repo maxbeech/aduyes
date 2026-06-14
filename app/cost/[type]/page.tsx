@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ADU_TYPES, getAduType, estimateCost, formatUSD } from "@/lib/cost";
 import { STATES } from "@/lib/states";
+import { costMetaTitle, costMetaDescription } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -15,8 +16,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { type } = await params;
   const t = getAduType(type);
   if (!t) return {};
-  const title = `${t.label} ADU Cost (2026): $${t.lowPerSqft}–$${t.highPerSqft}/sq ft by State`;
-  const description = `What a ${t.label.toLowerCase()} ADU costs in 2026, by state. ${t.blurb}`;
+  const title = costMetaTitle(t);
+  const description = costMetaDescription(t);
   return { title, description, alternates: { canonical: `${site.url}/cost/${t.slug}` } };
 }
 

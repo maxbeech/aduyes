@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Calculator from "@/components/Calculator";
 import { STATES, getState, citySlug } from "@/lib/states";
 import { estimateCost, formatUSD, ADU_TYPES } from "@/lib/cost";
+import { stateMetaTitle, stateMetaDescription } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -16,8 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { state } = await params;
   const s = getState(state);
   if (!s) return {};
-  const title = `${s.name} ADU Rules & Cost (2026) — Size, Setbacks & Estimates`;
-  const description = `What it costs to build an ADU in ${s.name}, plus ${s.name}'s accessory dwelling unit rules: ${s.rules.statewideLaw ? "statewide law" : "local zoning"}, size limits, setbacks, parking and owner-occupancy.`;
+  const title = stateMetaTitle(s);
+  const description = stateMetaDescription(s);
   return {
     title, description,
     alternates: { canonical: `${site.url}/${s.slug}` },

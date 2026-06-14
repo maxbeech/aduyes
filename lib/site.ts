@@ -3,11 +3,10 @@ export const site = {
   name: "ADUYes",
   domain: "aduyes.com",
   url: "https://aduyes.com",
-  tagline: "Can you build an ADU? Find out in 60 seconds — feasibility, rules & cost.",
+  tagline: "Free ADU feasibility & cost calculator",
+  // Kept ≤155 chars so it isn't truncated in search results (guarded by a test).
   description:
-    "ADUYes is a free accessory dwelling unit (ADU) feasibility and cost calculator. " +
-    "Check your state and city's ADU rules — size limits, setbacks, parking and owner-occupancy — " +
-    "and get an instant cost estimate for a detached ADU, garage conversion or JADU.",
+    "Free ADU feasibility & cost calculator. Check your state's accessory dwelling unit rules — size, setbacks, parking — and estimate your build cost in seconds.",
   email: "hello@aduyes.com",
   // Disclaimer shown wherever cost / rule output appears.
   disclaimer:

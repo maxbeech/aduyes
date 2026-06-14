@@ -1,9 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Calculator from "@/components/Calculator";
 import { STATES } from "@/lib/states";
 import { ADU_TYPES } from "@/lib/cost";
 import { POSTS } from "@/lib/posts";
 import { site } from "@/lib/site";
+
+export const metadata: Metadata = {
+  title: "Free ADU Cost & Feasibility Calculator",
+  description:
+    "Can you build an ADU? Get an instant cost estimate and check your state's ADU rules — size, setbacks, parking and owner-occupancy — free in 60 seconds.",
+  alternates: { canonical: site.url },
+};
 
 const FAQ = [
   { q: "How accurate is the ADU cost estimate?", a: "The calculator uses 2024–2025 turnkey cost ranges per ADU type, scaled by a regional construction-cost index for your state. It returns a realistic low–high range for planning. Your final price depends on your specific lot, finishes and contractor — always get a local quote." },
