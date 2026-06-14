@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { site } from "@/lib/site";
 import { ADU_TYPES } from "@/lib/cost";
+import { buildLeadMailto, isValidEmail } from "@/lib/lead";
 
 // Honest lead capture: composes a real, prefilled email to the ADUYes inbox via the
 // visitor's mail client. No fake "submitted!" state — the lead only sends when the
@@ -16,22 +17,18 @@ export default function ReportForm() {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const email = String(f.get("email") || "").trim();
-    if (!email || !/.+@.+\..+/.test(email)) {
+    if (!isValidEmail(email)) {
       setError("Please enter a valid email so we can send your report.");
       return;
     }
     setError(null);
-    const lines = [
-      `Name: ${f.get("name") || "—"}`,
-      `Email: ${email}`,
-      `Property ZIP: ${f.get("zip") || "—"}`,
-      `ADU type: ${f.get("aduType") || "—"}`,
-      `Timeline: ${f.get("timeline") || "—"}`,
-      `Notes: ${f.get("notes") || "—"}`,
-    ].join("\n");
-    const subject = encodeURIComponent("ADU feasibility report request");
-    const body = encodeURIComponent(`Please send my detailed ADU feasibility report.\n\n${lines}`);
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
+    window.location.href = buildLeadMailto({
+      name: String(f.get("name") || ""),
+      email,
+      zip: String(f.get("zip") || ""),
+      aduType: String(f.get("aduType") || ""),
+      timeline: String(f.get("timeline") || ""),
+    });
     setSent(true);
   }
 

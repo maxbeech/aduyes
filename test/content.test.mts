@@ -88,6 +88,26 @@ for (const t of ADU_TYPES) {
   check(`${t.slug}: cost desc ${DESC_MIN}-${DESC_MAX}`, d.length >= DESC_MIN && d.length <= DESC_MAX, `len ${d.length}`);
 }
 
+// --- Lead routing (lib/lead.ts) ---
+import { isValidEmail, buildLeadBody, buildLeadMailto } from "../lib/lead.ts";
+check("email valid", isValidEmail("jane@example.com"));
+check("email invalid: no @", !isValidEmail("notanemail"));
+check("email invalid: no domain dot", !isValidEmail("jane@example"));
+check("email invalid: empty", !isValidEmail("   "));
+check("email invalid: spaces", !isValidEmail("a b@c.com"));
+const body = buildLeadBody({ name: "Jane", email: "jane@example.com", zip: "90001", aduType: "Detached new build", timeline: "Next 3 months" });
+check("body has email", body.includes("jane@example.com"));
+check("body has all labels", ["Name:", "Email:", "Property ZIP:", "ADU type:", "Timeline:", "Notes:"].every((l) => body.includes(l)));
+check("body missing fields => dash", buildLeadBody({ email: "x@y.com" }).includes("Name: —"));
+const mailto = buildLeadMailto({ name: "Jane & Co. <test>", email: "jane@example.com", notes: "100% sure! a+b=c" });
+check("mailto targets inbox", mailto.startsWith("mailto:hello@aduyes.com?"));
+check("mailto has encoded subject", mailto.includes("subject=ADU%20feasibility%20report%20request"));
+check("mailto encodes special chars (& < space)", mailto.includes("Jane%20%26%20Co.%20%3Ctest%3E") && !mailto.includes("Jane & Co."));
+check("mailto encodes newlines", mailto.includes("%0A"));
+const longNotes = "x".repeat(5000);
+const longMailto = buildLeadMailto({ email: "a@b.com", notes: longNotes });
+check("mailto handles long input", longMailto.length > 5000 && longMailto.startsWith("mailto:"));
+
 // --- Accuracy regression guards (fabricated statutes the funnel introduced) ---
 const allText = POSTS.map((p) =>
   [p.title, p.description, ...p.blocks.flatMap((b) =>
