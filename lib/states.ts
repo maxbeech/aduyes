@@ -203,6 +203,29 @@ export const STATES: StateData[] = [
   { name: "New Jersey", slug: "new-jersey", abbr: "NJ", costIndex: 1.15, rules: GENERIC(), cities: ["Newark", "Jersey City", "Trenton", "Princeton"] },
   { name: "Hawaii", slug: "hawaii", abbr: "HI", costIndex: 1.35, rules: GENERIC({ summary: "Hawaii ADU (‘ohana unit) rules are set by each county. Honolulu allows one ADU on qualifying lots; check your county planning department for size and parking standards." }), cities: ["Honolulu", "Hilo", "Kailua", "Kapolei"] },
   { name: "Washington DC", slug: "washington-dc", abbr: "DC", costIndex: 1.20, rules: GENERIC(), cities: ["Washington"] },
+  // Remaining states — no statewide by-right ADU law (local zoning governs). Cost
+  // index reflects regional construction costs; city lists power programmatic pages.
+  { name: "Alabama", slug: "alabama", abbr: "AL", costIndex: 0.85, rules: GENERIC(), cities: ["Birmingham", "Montgomery", "Huntsville", "Mobile", "Tuscaloosa"] },
+  { name: "Alaska", slug: "alaska", abbr: "AK", costIndex: 1.30, rules: GENERIC(), cities: ["Anchorage", "Fairbanks", "Juneau"] },
+  { name: "Arkansas", slug: "arkansas", abbr: "AR", costIndex: 0.84, rules: GENERIC(), cities: ["Little Rock", "Fayetteville", "Fort Smith", "Bentonville"] },
+  { name: "Delaware", slug: "delaware", abbr: "DE", costIndex: 1.00, rules: GENERIC(), cities: ["Wilmington", "Dover", "Newark"] },
+  { name: "Idaho", slug: "idaho", abbr: "ID", costIndex: 0.95, rules: GENERIC(), cities: ["Boise", "Meridian", "Nampa", "Idaho Falls", "Coeur d'Alene"] },
+  { name: "Indiana", slug: "indiana", abbr: "IN", costIndex: 0.92, rules: GENERIC(), cities: ["Indianapolis", "Fort Wayne", "Evansville", "Bloomington", "Carmel"] },
+  { name: "Iowa", slug: "iowa", abbr: "IA", costIndex: 0.92, rules: GENERIC(), cities: ["Des Moines", "Cedar Rapids", "Iowa City", "Davenport"] },
+  { name: "Kansas", slug: "kansas", abbr: "KS", costIndex: 0.88, rules: GENERIC(), cities: ["Wichita", "Overland Park", "Kansas City", "Topeka", "Lawrence"] },
+  { name: "Kentucky", slug: "kentucky", abbr: "KY", costIndex: 0.90, rules: GENERIC(), cities: ["Louisville", "Lexington", "Bowling Green", "Covington"] },
+  { name: "Louisiana", slug: "louisiana", abbr: "LA", costIndex: 0.88, rules: GENERIC(), cities: ["New Orleans", "Baton Rouge", "Shreveport", "Lafayette"] },
+  { name: "Mississippi", slug: "mississippi", abbr: "MS", costIndex: 0.83, rules: GENERIC(), cities: ["Jackson", "Gulfport", "Southaven", "Hattiesburg"] },
+  { name: "Missouri", slug: "missouri", abbr: "MO", costIndex: 0.92, rules: GENERIC(), cities: ["Kansas City", "St. Louis", "Springfield", "Columbia"] },
+  { name: "Nebraska", slug: "nebraska", abbr: "NE", costIndex: 0.90, rules: GENERIC(), cities: ["Omaha", "Lincoln", "Bellevue"] },
+  { name: "New Mexico", slug: "new-mexico", abbr: "NM", costIndex: 0.90, rules: GENERIC(), cities: ["Albuquerque", "Santa Fe", "Las Cruces", "Rio Rancho"] },
+  { name: "North Dakota", slug: "north-dakota", abbr: "ND", costIndex: 0.95, rules: GENERIC(), cities: ["Fargo", "Bismarck", "Grand Forks"] },
+  { name: "Oklahoma", slug: "oklahoma", abbr: "OK", costIndex: 0.86, rules: GENERIC(), cities: ["Oklahoma City", "Tulsa", "Norman", "Edmond"] },
+  { name: "South Carolina", slug: "south-carolina", abbr: "SC", costIndex: 0.87, rules: GENERIC(), cities: ["Charleston", "Columbia", "Greenville", "Mount Pleasant"] },
+  { name: "South Dakota", slug: "south-dakota", abbr: "SD", costIndex: 0.90, rules: GENERIC(), cities: ["Sioux Falls", "Rapid City"] },
+  { name: "West Virginia", slug: "west-virginia", abbr: "WV", costIndex: 0.90, rules: GENERIC(), cities: ["Charleston", "Morgantown", "Huntington"] },
+  { name: "Wisconsin", slug: "wisconsin", abbr: "WI", costIndex: 1.00, rules: GENERIC(), cities: ["Milwaukee", "Madison", "Green Bay", "Kenosha"] },
+  { name: "Wyoming", slug: "wyoming", abbr: "WY", costIndex: 0.95, rules: GENERIC(), cities: ["Cheyenne", "Casper", "Jackson"] },
 ];
 
 export function getState(slug: string): StateData | undefined {

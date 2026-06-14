@@ -30,3 +30,22 @@ export function costMetaTitle(t: AduTypeInfo): string {
 export function costMetaDescription(t: AduTypeInfo): string {
   return `What a ${t.label.toLowerCase()} ADU costs in 2026 — typical $/sq ft and a price example for every U.S. state.`;
 }
+
+export interface Crumb {
+  name: string;
+  url: string;
+}
+
+/** Build a schema.org BreadcrumbList for richer search snippets + navigation. */
+export function breadcrumbLd(items: Crumb[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      item: it.url,
+    })),
+  };
+}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ADU_TYPES, getAduType, estimateCost, formatUSD } from "@/lib/cost";
 import { STATES } from "@/lib/states";
-import { costMetaTitle, costMetaDescription } from "@/lib/seo";
+import { costMetaTitle, costMetaDescription, breadcrumbLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -32,6 +32,10 @@ export default async function CostTypePage({ params }: Props) {
 
   return (
     <div className="space-y-10">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([
+        { name: "Home", url: site.url },
+        { name: `${t.label} ADU cost`, url: `${site.url}/cost/${t.slug}` },
+      ])) }} />
       <nav className="text-sm text-slate-500">
         <Link href="/" className="hover:text-slate-900">Home</Link> <span className="px-1">/</span>
         <span className="text-slate-700">{t.label} cost</span>

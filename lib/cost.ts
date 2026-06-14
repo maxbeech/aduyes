@@ -55,6 +55,12 @@ export interface CostInput {
   sqft: number;
 }
 
+export interface CostComponents {
+  hard: number; // construction (structure, finishes, MEP)
+  soft: number; // design, permits, plan-check, impact fees
+  site: number; // foundation, utility trenching, grading, connections
+}
+
 export interface CostBreakdown {
   low: number;
   mid: number;
@@ -65,9 +71,25 @@ export interface CostBreakdown {
   sqft: number;
   // Rough soft-cost slice already baked into the turnkey $/sq ft, surfaced for transparency.
   softCostShare: number;
+  // Mid-cost split into hard / soft / site (sums to mid).
+  components: CostComponents;
 }
 
 const SOFT_COST_SHARE = 0.18; // design, permits, fees, utility connections ≈ 18%
+
+// Site-work share varies by type: a conversion/JADU reuses the existing shell, so
+// little new foundation/site work; a detached new build needs the most.
+const SITE_SHARE: Record<AduType, number> = {
+  detached: 0.14, attached: 0.11, prefab: 0.12, "garage-conversion": 0.05, jadu: 0.03,
+};
+
+/** Split a mid turnkey cost into hard / soft / site components (sums to mid). */
+export function costComponents(mid: number, aduType: AduType): CostComponents {
+  const site = Math.round((mid * (SITE_SHARE[aduType] ?? 0.12)) / 100) * 100;
+  const soft = Math.round((mid * SOFT_COST_SHARE) / 100) * 100;
+  const hard = mid - site - soft;
+  return { hard, soft, site };
+}
 
 function round(n: number, to = 500): number {
   return Math.round(n / to) * to;
@@ -94,6 +116,7 @@ export function estimateCost(input: CostInput): CostBreakdown {
     perSqftHigh: Math.round(perSqftHigh),
     costIndex, sqft,
     softCostShare: SOFT_COST_SHARE,
+    components: costComponents(mid, input.aduType),
   };
 }
 

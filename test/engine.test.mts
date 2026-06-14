@@ -112,5 +112,45 @@ check("OR not local", assessFeasibility({ stateSlug: "oregon", aduType: "detache
 check("formatUSD zero", formatUSD(0) === "$0");
 check("formatUSD millions", formatUSD(1234567) === "$1,234,567");
 
+// --- Cost components (hard/soft/site) ---
+for (const s of STATES) {
+  for (const t of ADU_TYPES) {
+    const c = estimateCost({ stateSlug: s.slug, aduType: t.type, sqft: 600 });
+    const sum = c.components.hard + c.components.soft + c.components.site;
+    check(`${s.slug}/${t.slug}: components sum to mid`, sum === c.mid, `sum ${sum} vs mid ${c.mid}`);
+    check(`${s.slug}/${t.slug}: all components positive`, c.components.hard > 0 && c.components.soft > 0 && c.components.site >= 0);
+    check(`${s.slug}/${t.slug}: hard is largest`, c.components.hard >= c.components.soft && c.components.hard >= c.components.site);
+  }
+}
+// Garage conversion has less site work than a detached build (same state/size).
+const detComp = estimateCost({ stateSlug: "california", aduType: "detached", sqft: 600 }).components;
+const convComp = estimateCost({ stateSlug: "california", aduType: "garage-conversion", sqft: 600 }).components;
+check("garage conversion site < detached site (share)", convComp.site / (detComp.hard + detComp.soft + detComp.site) < detComp.site / (detComp.hard + detComp.soft + detComp.site));
+
+// --- Rent + ROI engine ---
+import { estimateRent, estimateRoi } from "../lib/income.ts";
+const rCA = estimateRent({ stateSlug: "california", sqft: 700 });
+const rTX = estimateRent({ stateSlug: "texas", sqft: 700 });
+check("rent: CA > TX (cost index)", rCA.monthlyHigh > rTX.monthlyHigh, `${rCA.monthlyHigh} vs ${rTX.monthlyHigh}`);
+check("rent: low < high", rCA.monthlyLow < rCA.monthlyHigh);
+check("rent: mid between", rCA.monthlyMid > rCA.monthlyLow && rCA.monthlyMid < rCA.monthlyHigh);
+check("rent: bigger ADU rents more", estimateRent({ stateSlug: "california", sqft: 1000 }).monthlyMid > estimateRent({ stateSlug: "california", sqft: 400 }).monthlyMid);
+check("rent: positive", rTX.monthlyLow > 0);
+const roi = estimateRoi({ buildCostMid: 200000, monthlyRentMid: 2000 });
+check("roi: annual gross = rent*12", roi.annualGrossRent === 24000);
+check("roi: net < gross (vacancy)", roi.annualNetRent < roi.annualGrossRent && roi.annualNetRent > 0);
+check("roi: gross yield = gross/cost", roi.grossYieldPct === 12, `got ${roi.grossYieldPct}`);
+check("roi: payback = cost/net", Math.abs(roi.paybackYears - 200000 / roi.annualNetRent) < 0.2, `got ${roi.paybackYears}`);
+check("roi: zero cost safe", estimateRoi({ buildCostMid: 0, monthlyRentMid: 2000 }).grossYieldPct === 0);
+
+// --- Lot-coverage feasibility flag ---
+const tight = assessFeasibility({ stateSlug: "california", aduType: "detached", sqft: 1000, lotSqft: 2000 });
+check("tight lot flagged caution", tight.flags.some((f) => f.level === "caution" && /lot/i.test(f.title)), JSON.stringify(tight.flags.map((f) => f.title)));
+const roomy = assessFeasibility({ stateSlug: "california", aduType: "detached", sqft: 500, lotSqft: 12000 });
+check("roomy lot pass", roomy.flags.some((f) => f.level === "pass" && /lot/i.test(f.title)));
+const jaduLot = assessFeasibility({ stateSlug: "california", aduType: "jadu", sqft: 400, lotSqft: 2000 });
+check("JADU lot not a constraint", jaduLot.flags.some((f) => /lot/i.test(f.title) && f.level === "pass"));
+check("no lotSqft => no lot flag", !assessFeasibility({ stateSlug: "california", aduType: "detached", sqft: 600 }).flags.some((f) => /lot/i.test(f.title)));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

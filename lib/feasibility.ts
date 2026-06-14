@@ -67,6 +67,20 @@ function ownerOccFlag(rules: AduRules, aduType: AduType, ownerOccupies?: boolean
   return { level: "info", title: "Owner-occupancy varies", detail: ownerOccupies === false ? "Some cities require the owner to live on-site to rent an ADU — confirm locally before planning a pure rental." : "Owner-occupancy rules are set locally in this state." };
 }
 
+function lotCoverageFlag(input: FeasibilityInput): FeasibilityFlag | null {
+  if (!input.lotSqft || input.lotSqft <= 0) return null;
+  // A detached/garage ADU adds ground-floor footprint ≈ its size (JADU/attached add little).
+  const footprint = input.aduType === "jadu" || input.aduType === "attached" ? 0 : input.sqft;
+  const coverage = footprint / input.lotSqft;
+  if (footprint === 0) {
+    return { level: "pass", title: "Lot size not a constraint", detail: "A JADU or attached ADU adds little new footprint, so lot coverage is rarely an issue." };
+  }
+  if (coverage > 0.4) {
+    return { level: "caution", title: "Tight lot for this size", detail: `A ${input.sqft} sq ft footprint covers about ${Math.round(coverage * 100)}% of a ${input.lotSqft.toLocaleString()} sq ft lot. Most cities cap rear-yard/lot coverage, so a smaller unit or a conversion may fit better.` };
+  }
+  return { level: "pass", title: "Lot has room", detail: `A ${input.sqft} sq ft ADU uses about ${Math.round(coverage * 100)}% of your ${input.lotSqft.toLocaleString()} sq ft lot — comfortably within typical coverage limits.` };
+}
+
 function approvalFlag(rules: AduRules): FeasibilityFlag | null {
   if (rules.approvalDays != null) {
     return { level: "pass", title: `Ministerial approval in ${rules.approvalDays} days`, detail: `By law your city must approve a complete ADU application within ${rules.approvalDays} days, without discretionary review or a public hearing.` };
@@ -85,6 +99,8 @@ export function assessFeasibility(input: FeasibilityInput): FeasibilityResult {
   }
   flags.push(parkingFlag(rules, input.nearTransit));
   flags.push(ownerOccFlag(rules, input.aduType, input.ownerOccupies));
+  const lotFlag = lotCoverageFlag(input);
+  if (lotFlag) flags.push(lotFlag);
   const appr = approvalFlag(rules);
   if (appr) flags.push(appr);
   if (rules.feeWaiverSqft != null && input.sqft < rules.feeWaiverSqft) {

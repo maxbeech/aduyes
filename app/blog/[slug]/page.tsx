@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { POSTS, getPost, type Block } from "@/lib/posts";
+import { breadcrumbLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -62,6 +63,11 @@ export default async function BlogPost({ params }: Props) {
   return (
     <article className="mx-auto max-w-3xl">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([
+        { name: "Home", url: site.url },
+        { name: "Guides", url: `${site.url}/blog` },
+        { name: post.title, url: `${site.url}/blog/${post.slug}` },
+      ])) }} />
       <nav className="text-sm text-slate-500">
         <Link href="/" className="hover:text-slate-900">Home</Link> <span className="px-1">/</span>
         <Link href="/blog" className="hover:text-slate-900">Guides</Link> <span className="px-1">/</span>

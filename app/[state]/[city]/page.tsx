@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Calculator from "@/components/Calculator";
 import { STATES, findCity, citySlug } from "@/lib/states";
 import { estimateCost, formatUSD } from "@/lib/cost";
-import { cityMetaTitle, cityMetaDescription } from "@/lib/seo";
+import { cityMetaTitle, cityMetaDescription, breadcrumbLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -47,6 +47,11 @@ export default async function CityPage({ params }: Props) {
   return (
     <div className="space-y-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd([
+        { name: "Home", url: site.url },
+        { name: s.name, url: `${site.url}/${s.slug}` },
+        { name: cityName, url: `${site.url}/${s.slug}/${city}` },
+      ])) }} />
 
       <nav className="text-sm text-slate-500">
         <Link href="/" className="hover:text-slate-900">Home</Link> <span className="px-1">/</span>

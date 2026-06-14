@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Calculator from "@/components/Calculator";
+import ReportForm from "@/components/ReportForm";
 import { STATES } from "@/lib/states";
 import { ADU_TYPES } from "@/lib/cost";
 import { POSTS } from "@/lib/posts";
@@ -100,9 +101,7 @@ export default function Home() {
           <span className="text-3xl font-bold">$49</span>
           <span className="text-sm text-slate-400">one-time · 100% applied as credit if you build with a partner</span>
         </div>
-        <a href={`mailto:${site.email}?subject=ADU%20feasibility%20report`} className="mt-6 inline-block rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-white hover:bg-emerald-400">
-          Request your report
-        </a>
+        <ReportForm />
       </section>
 
       {/* States */}

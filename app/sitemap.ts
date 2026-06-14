@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: site.url, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${site.url}/states`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${site.url}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${site.url}/methodology`, lastModified: now, changeFrequency: "yearly", priority: 0.4 },
   ];
 
   for (const t of ADU_TYPES) {

@@ -50,6 +50,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               substitute for advice from your city planning department, an architect or a licensed
               contractor. Always confirm zoning rules and pricing locally before relying on them.
             </p>
+            <p className="mt-3 flex flex-wrap gap-4 text-xs">
+              <Link href="/states" className="text-slate-500 hover:text-slate-900">ADU rules by state</Link>
+              <Link href="/blog" className="text-slate-500 hover:text-slate-900">Guides</Link>
+              <Link href="/methodology" className="text-slate-500 hover:text-slate-900">Methodology</Link>
+            </p>
             <p className="mt-4 text-xs text-slate-400">© 2026 {site.name}. All rights reserved.</p>
           </div>
         </footer>
