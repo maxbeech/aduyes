@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx test/engine.test.mts"
+    "test": "tsx test/engine.test.mts && tsx test/content.test.mts"
   },
   "dependencies": {
     "next": "16.2.9",

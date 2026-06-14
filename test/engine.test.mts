@@ -63,5 +63,54 @@ check("citySlug normalises", citySlug("San José ") === "san-jos" || citySlug("L
 check("findCity resolves LA in CA", findCity("california", "los-angeles")?.city === "Los Angeles");
 check("getState by slug", getState("washington")?.abbr === "WA");
 
+// --- Deeper coverage: every state, every type ---
+for (const s of STATES) {
+  check(`${s.slug}: costIndex > 0`, s.costIndex > 0, `got ${s.costIndex}`);
+  check(`${s.slug}: slug is url-safe`, /^[a-z0-9-]+$/.test(s.slug));
+  for (const t of ADU_TYPES) {
+    const c = estimateCost({ stateSlug: s.slug, aduType: t.type, sqft: 600 });
+    check(`${s.slug}/${t.slug}: low < high`, c.low < c.high, `${c.low}/${c.high}`);
+    check(`${s.slug}/${t.slug}: low <= mid <= high`, c.low <= c.mid && c.mid <= c.high);
+    check(`${s.slug}/${t.slug}: positive cost`, c.low > 0);
+  }
+}
+
+// Monotonicity: bigger ADU costs more (same state/type).
+const small = estimateCost({ stateSlug: "california", aduType: "detached", sqft: 400 });
+const large = estimateCost({ stateSlug: "california", aduType: "detached", sqft: 1000 });
+check("cost increases with size", large.high > small.high && large.low > small.low);
+
+// Type ordering: JADU cheapest, detached priciest per sqft (same state).
+const perSqft = ADU_TYPES.map((t) => ({ t: t.slug, v: estimateCost({ stateSlug: "texas", aduType: t.type, sqft: 600 }).perSqftHigh }));
+const jadu = perSqft.find((x) => x.t === "jadu")!.v;
+const det = perSqft.find((x) => x.t === "detached")!.v;
+check("JADU cheapest per sqft", jadu === Math.min(...perSqft.map((x) => x.v)), `jadu ${jadu}`);
+check("detached priciest per sqft", det === Math.max(...perSqft.map((x) => x.v)), `det ${det}`);
+
+// Min clamp: sqft below 100 clamps to 100.
+check("sqft clamped to min 100", estimateCost({ stateSlug: "texas", aduType: "jadu", sqft: 10 }).sqft === 100);
+
+// Hawaii (highest index 1.35) is the most expensive state for a detached unit.
+const allDetached = STATES.map((s) => ({ s: s.slug, v: estimateCost({ stateSlug: s.slug, aduType: "detached", sqft: 600 }).high }));
+check("Hawaii is most expensive detached", allDetached.find((x) => x.s === "hawaii")!.v === Math.max(...allDetached.map((x) => x.v)));
+
+// Feasibility for every state produces a verdict + at least 3 flags + a citation.
+for (const s of STATES) {
+  const f = assessFeasibility({ stateSlug: s.slug, aduType: "detached", sqft: 600 });
+  check(`${s.slug}: feasibility has flags`, f.flags.length >= 3, `got ${f.flags.length}`);
+  check(`${s.slug}: verdict valid`, ["likely", "maybe", "local"].includes(f.verdict));
+  check(`${s.slug}: has citation`, f.citation.length > 0);
+  check(`${s.slug}: statewide => not 'local'`, !s.rules.statewideLaw || f.verdict !== "local");
+  check(`${s.slug}: no statewide => 'local'`, s.rules.statewideLaw || f.verdict === "local");
+}
+
+// WA + OR statewide => likely/maybe (never local).
+check("WA not local", assessFeasibility({ stateSlug: "washington", aduType: "detached", sqft: 800 }).verdict !== "local");
+check("OR not local", assessFeasibility({ stateSlug: "oregon", aduType: "detached", sqft: 600 }).verdict !== "local");
+
+// formatUSD edge cases.
+check("formatUSD zero", formatUSD(0) === "$0");
+check("formatUSD millions", formatUSD(1234567) === "$1,234,567");
+
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

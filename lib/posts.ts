@@ -24,7 +24,7 @@ export const POSTS: Post[] = [
     slug: "how-much-does-an-adu-cost",
     title: "How Much Does an ADU Cost in 2026? Real Numbers by Type and State",
     description:
-      "A clear breakdown of what an accessory dwelling unit actually costs in 2026 — by construction type (detached, garage conversion, JADU, prefab) and by region — plus the hidden soft costs.",
+      "What an ADU actually costs in 2026 — by construction type (detached, garage conversion, JADU, prefab) and by region, plus the hidden soft costs people forget.",
     keyword: "how much does an adu cost",
     date: "2026-06-14",
     readingMinutes: 7,
@@ -76,9 +76,9 @@ export const POSTS: Post[] = [
   },
   {
     slug: "california-adu-rules-2026",
-    title: "California ADU Rules in 2026: Size, Setbacks, Parking and Owner-Occupancy",
+    title: "California ADU Rules in 2026: Size, Setbacks & Parking",
     description:
-      "A plain-English guide to California's statewide ADU law in 2026 — the 800 sq ft guarantee, 4 ft setbacks, the transit parking exemption, the 60-day approval rule and the end of owner-occupancy requirements.",
+      "A plain-English guide to California's statewide ADU law in 2026 — the 800 sq ft guarantee, 4 ft setbacks, the transit parking exemption and the 60-day approval rule.",
     keyword: "california adu rules",
     date: "2026-06-14",
     readingMinutes: 8,
