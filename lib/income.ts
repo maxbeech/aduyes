@@ -52,6 +52,38 @@ export interface RoiEstimate {
   paybackYears: number; // buildCost / annualNetRent
 }
 
+export interface LoanInput {
+  principal: number;
+  annualRatePct?: number; // default 7.5%
+  years?: number; // default 20
+}
+
+export interface LoanEstimate {
+  monthlyPayment: number;
+  annualRatePct: number;
+  years: number;
+  totalInterest: number;
+}
+
+/** Standard amortized monthly payment for financing an ADU build. */
+export function estimateLoanPayment(input: LoanInput): LoanEstimate {
+  const annualRatePct = input.annualRatePct ?? 7.5;
+  const years = input.years ?? 20;
+  const principal = Math.max(0, input.principal);
+  const n = years * 12;
+  const r = annualRatePct / 100 / 12;
+  let monthly: number;
+  if (r === 0) monthly = principal / n;
+  else monthly = (principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+  const monthlyPayment = Math.round(monthly);
+  return {
+    monthlyPayment,
+    annualRatePct,
+    years,
+    totalInterest: Math.round(monthlyPayment * n - principal),
+  };
+}
+
 /** Estimate gross yield and simple payback for an ADU rental. */
 export function estimateRoi(input: RoiInput): RoiEstimate {
   const vacancy = input.vacancyRate ?? 0.07;

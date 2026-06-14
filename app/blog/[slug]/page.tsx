@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { POSTS, getPost, type Block } from "@/lib/posts";
+import { POSTS, getPost, relatedPosts, type Block } from "@/lib/posts";
 import { breadcrumbLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -80,6 +80,18 @@ export default async function BlogPost({ params }: Props) {
         <p className="font-semibold">Find out what your ADU will cost</p>
         <Link href="/" className="mt-3 inline-block rounded-xl bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-600">Open the calculator →</Link>
       </div>
+
+      <section className="mt-10 border-t border-slate-200 pt-6">
+        <h2 className="text-lg font-semibold text-slate-900">Related guides</h2>
+        <ul className="mt-3 space-y-2">
+          {relatedPosts(post.slug).map((rp) => (
+            <li key={rp.slug}>
+              <Link href={`/blog/${rp.slug}`} className="text-emerald-700 hover:underline">{rp.title}</Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <p className="mt-6 text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
     </article>
   );

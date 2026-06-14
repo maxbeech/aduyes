@@ -270,6 +270,17 @@ export function getPost(slug: string): Post | undefined {
   return POSTS.find((p) => p.slug === slug);
 }
 
+/** Up to `n` other posts to surface as "related reading" (internal linking). */
+export function relatedPosts(slug: string, n = 3): Post[] {
+  const idx = POSTS.findIndex((p) => p.slug === slug);
+  if (idx === -1) return POSTS.slice(0, n);
+  const rest: Post[] = [];
+  for (let i = 1; i <= POSTS.length && rest.length < n; i++) {
+    rest.push(POSTS[(idx + i) % POSTS.length]);
+  }
+  return rest;
+}
+
 // ──────────────────────────────────────────────────────────────────────────────
 // Stage-4 weekly content — published 2026-06-14
 // ──────────────────────────────────────────────────────────────────────────────

@@ -53,6 +53,35 @@ export interface CostInput {
   stateSlug: string;
   aduType: AduType;
   sqft: number;
+  // Optional metro-level multiplier on top of the state index (city pages).
+  cityMultiplier?: number;
+}
+
+// Curated metro construction-cost adjustments vs the state average (1.00 = state
+// average). Major metros cost more than their state-wide baseline; this makes
+// city pages numerically distinct and more accurate. Keyed by "stateSlug/citySlug".
+// Directional planning estimates (documented in /methodology); unlisted cities use 1.00.
+const CITY_COST_ADJ: Record<string, number> = {
+  "california/san-francisco": 1.18, "california/san-jose": 1.15, "california/berkeley": 1.12,
+  "california/oakland": 1.10, "california/los-angeles": 1.08, "california/santa-ana": 1.07,
+  "california/irvine": 1.08, "california/san-diego": 1.05, "california/anaheim": 1.05,
+  "california/sacramento": 0.98, "california/fresno": 0.92, "california/bakersfield": 0.9, "california/riverside": 0.95,
+  "new-york/new-york-city": 1.2, "new-york/yonkers": 1.08, "new-york/buffalo": 0.9, "new-york/rochester": 0.9, "new-york/syracuse": 0.88,
+  "washington/seattle": 1.12, "washington/bellevue": 1.14, "washington/spokane": 0.92,
+  "massachusetts/boston": 1.14, "massachusetts/cambridge": 1.14, "massachusetts/somerville": 1.1,
+  "illinois/chicago": 1.08, "illinois/evanston": 1.06,
+  "colorado/denver": 1.05, "colorado/boulder": 1.12, "colorado/aspen": 1.3,
+  "oregon/portland": 1.06, "oregon/bend": 1.05,
+  "texas/austin": 1.06, "texas/dallas": 1.0, "texas/houston": 0.98,
+  "florida/miami": 1.08, "florida/fort-lauderdale": 1.05, "florida/orlando": 0.98,
+  "hawaii/honolulu": 1.05, "new-jersey/jersey-city": 1.12, "connecticut/stamford": 1.1,
+  "nevada/las-vegas": 1.02, "arizona/scottsdale": 1.05, "tennessee/nashville": 1.03,
+  "georgia/atlanta": 1.03, "north-carolina/asheville": 1.04, "utah/salt-lake-city": 1.02,
+};
+
+/** Metro cost multiplier vs the state average (1.00 if not specially listed). */
+export function cityCostMultiplier(stateSlug: string, citySlugStr: string): number {
+  return CITY_COST_ADJ[`${stateSlug}/${citySlugStr}`] ?? 1.0;
 }
 
 export interface CostComponents {
@@ -100,7 +129,9 @@ export function estimateCost(input: CostInput): CostBreakdown {
   const typeInfo = getAduType(input.aduType);
   if (!typeInfo) throw new Error(`Unknown ADU type: ${input.aduType}`);
   const state = getState(input.stateSlug);
-  const costIndex = state ? state.costIndex : 1.0;
+  const baseIndex = state ? state.costIndex : 1.0;
+  const cityMul = input.cityMultiplier && input.cityMultiplier > 0 ? input.cityMultiplier : 1.0;
+  const costIndex = baseIndex * cityMul;
   const sqft = Math.max(100, Math.min(input.sqft, 1500));
 
   const perSqftLow = typeInfo.lowPerSqft * costIndex;

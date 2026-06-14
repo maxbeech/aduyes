@@ -143,6 +143,27 @@ check("roi: gross yield = gross/cost", roi.grossYieldPct === 12, `got ${roi.gros
 check("roi: payback = cost/net", Math.abs(roi.paybackYears - 200000 / roi.annualNetRent) < 0.2, `got ${roi.paybackYears}`);
 check("roi: zero cost safe", estimateRoi({ buildCostMid: 0, monthlyRentMid: 2000 }).grossYieldPct === 0);
 
+// --- City cost multiplier ---
+import { cityCostMultiplier } from "../lib/cost.ts";
+check("city mult: SF metro > 1", cityCostMultiplier("california", "san-francisco") > 1);
+check("city mult: unknown city = 1", cityCostMultiplier("texas", "nowhere-town") === 1.0);
+check("city mult: cheap metro < 1", cityCostMultiplier("california", "fresno") < 1);
+const sfCost = estimateCost({ stateSlug: "california", aduType: "detached", sqft: 700, cityMultiplier: cityCostMultiplier("california", "san-francisco") });
+const caCost = estimateCost({ stateSlug: "california", aduType: "detached", sqft: 700 });
+check("SF costs more than CA average", sfCost.high > caCost.high, `${sfCost.high} vs ${caCost.high}`);
+check("cityMultiplier folds into costIndex", Math.abs(sfCost.costIndex - caCost.costIndex * 1.18) < 0.001);
+check("cityMultiplier<=0 ignored", estimateCost({ stateSlug: "texas", aduType: "detached", sqft: 600, cityMultiplier: 0 }).costIndex === estimateCost({ stateSlug: "texas", aduType: "detached", sqft: 600 }).costIndex);
+
+// --- Loan / financing estimate ---
+import { estimateLoanPayment } from "../lib/income.ts";
+const ln = estimateLoanPayment({ principal: 200000 });
+check("loan: defaults 7.5%/20yr", ln.annualRatePct === 7.5 && ln.years === 20);
+check("loan: monthly ~1612", ln.monthlyPayment > 1550 && ln.monthlyPayment < 1680, `got ${ln.monthlyPayment}`);
+check("loan: positive interest", ln.totalInterest > 0);
+check("loan: bigger principal => bigger payment", estimateLoanPayment({ principal: 400000 }).monthlyPayment > ln.monthlyPayment);
+check("loan: 0% rate = principal/months", estimateLoanPayment({ principal: 240000, annualRatePct: 0, years: 20 }).monthlyPayment === 1000);
+check("loan: 0 principal safe", estimateLoanPayment({ principal: 0 }).monthlyPayment === 0);
+
 // --- Lot-coverage feasibility flag ---
 const tight = assessFeasibility({ stateSlug: "california", aduType: "detached", sqft: 1000, lotSqft: 2000 });
 check("tight lot flagged caution", tight.flags.some((f) => f.level === "caution" && /lot/i.test(f.title)), JSON.stringify(tight.flags.map((f) => f.title)));

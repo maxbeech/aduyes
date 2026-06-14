@@ -38,6 +38,16 @@ for (const p of POSTS) {
 }
 check("getPost unknown -> undefined", getPost("does-not-exist") === undefined);
 
+// relatedPosts: returns 3 distinct others, never the post itself, all valid.
+import { relatedPosts } from "../lib/posts.ts";
+for (const p of POSTS) {
+  const rel = relatedPosts(p.slug);
+  check(`${p.slug}: 3 related`, rel.length === 3, `got ${rel.length}`);
+  check(`${p.slug}: excludes self`, !rel.some((r) => r.slug === p.slug));
+  check(`${p.slug}: related are real posts`, rel.every((r) => POSTS.some((x) => x.slug === r.slug)));
+  check(`${p.slug}: related unique`, new Set(rel.map((r) => r.slug)).size === rel.length);
+}
+
 // --- Programmatic URL surface (mirror sitemap/generateStaticParams) ---
 const urls = new Set<string>(["/", "/states", "/blog"]);
 for (const t of ADU_TYPES) urls.add(`/cost/${t.slug}`);

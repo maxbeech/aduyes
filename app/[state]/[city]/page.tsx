@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Calculator from "@/components/Calculator";
 import { STATES, findCity, citySlug } from "@/lib/states";
-import { estimateCost, formatUSD } from "@/lib/cost";
+import { estimateCost, formatUSD, cityCostMultiplier } from "@/lib/cost";
 import { cityMetaTitle, cityMetaDescription, breadcrumbLd } from "@/lib/seo";
 import { site } from "@/lib/site";
 
@@ -32,8 +32,17 @@ export default async function CityPage({ params }: Props) {
   if (!hit) notFound();
   const { state: s, city: cityName } = hit;
   const r = s.rules;
-  const example = estimateCost({ stateSlug: s.slug, aduType: "detached", sqft: 700 });
-  const conv = estimateCost({ stateSlug: s.slug, aduType: "garage-conversion", sqft: 400 });
+  const cityMultiplier = cityCostMultiplier(s.slug, city);
+  const example = estimateCost({ stateSlug: s.slug, aduType: "detached", sqft: 700, cityMultiplier });
+  const conv = estimateCost({ stateSlug: s.slug, aduType: "garage-conversion", sqft: 400, cityMultiplier });
+  // Unique, city-specific cost-context line (differentiates each city page + adds accuracy).
+  const adjPct = Math.round((cityMultiplier - 1) * 100);
+  const costContext =
+    adjPct >= 3
+      ? `Construction in ${cityName} runs about ${adjPct}% above the ${s.name} average, so budget toward the higher end of these ranges.`
+      : adjPct <= -3
+      ? `Construction in ${cityName} tends to run about ${Math.abs(adjPct)}% below the ${s.name} average, so costs here are on the lower end.`
+      : `Construction costs in ${cityName} track close to the ${s.name} state average.`;
 
   const ld = {
     "@context": "https://schema.org",
@@ -68,6 +77,7 @@ export default async function CityPage({ params }: Props) {
             ? `Yes — ${cityName} is governed by ${s.name}'s statewide ADU law, which limits what the city can restrict. A 700 sq ft detached ADU here runs about ${formatUSD(example.low)}–${formatUSD(example.high)}.`
             : `ADU rules in ${cityName} are set by local zoning in ${s.name}. Many ${s.name} cities allow ADUs — here's what to check, plus typical costs (${formatUSD(example.low)}–${formatUSD(example.high)} for a 700 sq ft detached unit).`}
         </p>
+        <p className="mt-2 max-w-2xl text-sm text-slate-500">{costContext}</p>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-3">
@@ -95,7 +105,7 @@ export default async function CityPage({ params }: Props) {
 
       <section>
         <h2 className="text-2xl font-bold text-slate-900">Estimate your {cityName} ADU cost</h2>
-        <div className="mt-6"><Calculator defaultStateSlug={s.slug} /></div>
+        <div className="mt-6"><Calculator defaultStateSlug={s.slug} defaultCityMultiplier={cityMultiplier} /></div>
       </section>
 
       <section>

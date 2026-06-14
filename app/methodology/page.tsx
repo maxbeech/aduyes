@@ -45,6 +45,7 @@ export default function Methodology() {
           </table>
         </div>
         <p className="mt-3 text-sm text-slate-500">The mid-point is split into ~70% construction, ~18% design &amp; permits, and a type-dependent site-work share (lowest for conversions and JADUs, highest for detached new builds).</p>
+        <p className="mt-2 text-sm text-slate-500">On city pages we apply an additional <strong>metro adjustment</strong> for higher- and lower-cost markets (for example, San Francisco runs above the California average), so city estimates are more local than the state baseline.</p>
       </section>
 
       <section>
@@ -62,7 +63,9 @@ export default function Methodology() {
         <p className="mt-2 text-slate-700">
           Estimated rent uses a national ADU rent band per square foot scaled by the same regional index, with a damped
           size adjustment (small units rent at a higher $/sq ft). Gross yield is annual rent ÷ build cost; simple payback is
-          build cost ÷ annual rent after a 7% vacancy allowance, before financing and maintenance.
+          build cost ÷ annual rent after a 7% vacancy allowance, before financing and maintenance. The financing figure is a
+          standard amortized monthly payment on the build cost over 20 years at an illustrative 7.5% rate — adjust for your
+          actual loan terms.
         </p>
       </section>
 

@@ -53,7 +53,7 @@ export default function Home() {
 
       {/* Calculator */}
       <section id="calculator">
-        <Calculator />
+        <Calculator syncUrl />
       </section>
 
       {/* How it works */}

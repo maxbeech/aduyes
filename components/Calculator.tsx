@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { STATES } from "@/lib/states";
-import { ADU_TYPES, estimateCost, formatUSD, type AduType } from "@/lib/cost";
+import { ADU_TYPES, estimateCost, formatUSD, getAduType, type AduType } from "@/lib/cost";
 import { assessFeasibility, type FlagLevel } from "@/lib/feasibility";
-import { estimateRent, estimateRoi } from "@/lib/income";
+import { estimateRent, estimateRoi, estimateLoanPayment } from "@/lib/income";
 import { site } from "@/lib/site";
 
 const LEVEL_STYLES: Record<FlagLevel, string> = {
@@ -14,7 +14,7 @@ const LEVEL_STYLES: Record<FlagLevel, string> = {
 };
 const LEVEL_ICON: Record<FlagLevel, string> = { pass: "✓", caution: "!", info: "i" };
 
-export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: string }) {
+export default function Calculator({ defaultStateSlug, defaultCityMultiplier, syncUrl }: { defaultStateSlug?: string; defaultCityMultiplier?: number; syncUrl?: boolean }) {
   const [stateSlug, setStateSlug] = useState(defaultStateSlug ?? "california");
   const [aduType, setAduType] = useState<AduType>("detached");
   const [sqft, setSqft] = useState(700);
@@ -22,13 +22,37 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
   const [nearTransit, setNearTransit] = useState(true);
   const [ownerOccupies, setOwnerOccupies] = useState(true);
 
-  const cost = useMemo(() => estimateCost({ stateSlug, aduType, sqft }), [stateSlug, aduType, sqft]);
+  // Shareable results: on mount read inputs from the URL; thereafter reflect changes
+  // into the URL (replaceState) so a result can be bookmarked/shared. Home page only.
+  useEffect(() => {
+    if (!syncUrl) return;
+    // One-time mount sync of React state FROM an external system (the URL) so shared
+    // links restore inputs. Defaults are rendered on the server to avoid hydration
+    // mismatch, then reconciled here. This is the intended use of an effect.
+    /* eslint-disable react-hooks/set-state-in-effect */
+    const p = new URLSearchParams(window.location.search);
+    const st = p.get("state"); if (st && STATES.some((s) => s.slug === st)) setStateSlug(st);
+    const ty = p.get("type"); if (ty && getAduType(ty)) setAduType(getAduType(ty)!.type);
+    const sz = Number(p.get("size")); if (sz >= 200 && sz <= 1200) setSqft(sz);
+    const lt = Number(p.get("lot")); if (lt >= 2000 && lt <= 20000) setLotSqft(lt);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, [syncUrl]);
+  useEffect(() => {
+    if (!syncUrl) return;
+    const p = new URLSearchParams({ state: stateSlug, type: aduType, size: String(sqft), lot: String(lotSqft) });
+    window.history.replaceState(null, "", `${window.location.pathname}?${p.toString()}`);
+  }, [syncUrl, stateSlug, aduType, sqft, lotSqft]);
+
+  // City pages pass a metro multiplier; it only applies while the preset state is selected.
+  const cityMultiplier = defaultCityMultiplier && stateSlug === defaultStateSlug ? defaultCityMultiplier : 1.0;
+  const cost = useMemo(() => estimateCost({ stateSlug, aduType, sqft, cityMultiplier }), [stateSlug, aduType, sqft, cityMultiplier]);
   const feas = useMemo(
     () => assessFeasibility({ stateSlug, aduType, sqft, lotSqft, nearTransit, ownerOccupies }),
     [stateSlug, aduType, sqft, lotSqft, nearTransit, ownerOccupies]
   );
   const rent = useMemo(() => estimateRent({ stateSlug, sqft }), [stateSlug, sqft]);
   const roi = useMemo(() => estimateRoi({ buildCostMid: cost.mid, monthlyRentMid: rent.monthlyMid }), [cost.mid, rent.monthlyMid]);
+  const loan = useMemo(() => estimateLoanPayment({ principal: cost.mid }), [cost.mid]);
   const stateName = STATES.find((s) => s.slug === stateSlug)?.name ?? "your state";
 
   const comp = cost.components;
@@ -159,6 +183,9 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
             <div><p className="text-base font-bold text-slate-900">{roi.paybackYears} yrs</p><p className="text-xs text-slate-500">payback</p></div>
           </div>
           <p className="mt-2 text-xs text-slate-500">~{formatUSD(roi.annualNetRent)}/yr after a 7% vacancy allowance, before financing &amp; maintenance.</p>
+          <p className="mt-2 border-t border-slate-200 pt-2 text-xs text-slate-600">
+            Financed over {loan.years} yrs at {loan.annualRatePct}%, the build is about <strong className="font-semibold text-slate-900">{formatUSD(loan.monthlyPayment)}/mo</strong> — vs ~{formatUSD(rent.monthlyMid)}/mo in estimated rent.
+          </p>
         </div>
 
         <a href="#report" className="mt-5 block rounded-xl bg-emerald-700 px-5 py-3 text-center font-semibold text-white transition hover:bg-emerald-800">
