@@ -26,10 +26,14 @@ are length-guarded by tests for every route.
 ## Calculator features
 
 - Cost estimate by state × ADU type × size, with a **hard / soft / site cost breakdown**
+- **Metro-level cost adjustment** on city pages (`cityCostMultiplier` in `lib/cost.ts`) so
+  e.g. San Francisco reads higher than the California average — distinct, accurate city pages
 - **Feasibility flags** (size, setbacks, parking, owner-occupancy, approval time, impact
   fees, and a **lot-coverage** check from the lot-size input) with statute citations
-- **Rental income & ROI** estimate (`lib/income.ts`): monthly rent range, gross yield and
-  simple payback from the build cost
+- **Rental income, ROI & financing** (`lib/income.ts`): monthly rent range, gross yield,
+  simple payback, and an amortized **monthly loan payment** on the build cost
+- **Shareable results** — the home calculator reads inputs from the URL query and reflects
+  changes back (`?state=&type=&size=&lot=`), so an estimate is bookmarkable/shareable
 
 ## Monetisation
 
