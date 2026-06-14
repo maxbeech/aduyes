@@ -173,5 +173,21 @@ const jaduLot = assessFeasibility({ stateSlug: "california", aduType: "jadu", sq
 check("JADU lot not a constraint", jaduLot.flags.some((f) => /lot/i.test(f.title) && f.level === "pass"));
 check("no lotSqft => no lot flag", !assessFeasibility({ stateSlug: "california", aduType: "detached", sqft: 600 }).flags.some((f) => /lot/i.test(f.title)));
 
+// --- Data-integrity: all cost estimates within sane bounds across every page ---
+for (const s of STATES) {
+  for (const t of ADU_TYPES) {
+    for (const size of [400, 800, 1200]) {
+      const c = estimateCost({ stateSlug: s.slug, aduType: t.type, sqft: size });
+      const ok = c.low > 20000 && c.high < 800000 && c.low < c.high && c.perSqftLow > 50 && c.perSqftHigh < 600;
+      check(`bounds ${s.slug}/${t.slug}/${size}`, ok, `low ${c.low} high ${c.high} psf ${c.perSqftLow}-${c.perSqftHigh}`);
+    }
+  }
+}
+// rent within sane bounds for every state
+for (const s of STATES) {
+  const r = estimateRent({ stateSlug: s.slug, sqft: 700 });
+  check(`rent bounds ${s.slug}`, r.monthlyLow > 300 && r.monthlyHigh < 6000 && r.monthlyLow < r.monthlyHigh, `${r.monthlyLow}-${r.monthlyHigh}`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

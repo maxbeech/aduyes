@@ -4,6 +4,10 @@ import { ADU_TYPES } from "@/lib/cost";
 import { STATES } from "@/lib/states";
 import { site } from "@/lib/site";
 
+// ISR: prerendered at build and revalidated weekly (604800s) — keeps pages on
+// Vercel's edge cache (Fast Origin Transfer) while staying fresh if data changes.
+export const revalidate = 604800;
+
 export const metadata: Metadata = {
   title: "How We Estimate ADU Costs & Feasibility",
   description: "How ADUYes calculates ADU cost, feasibility and rental estimates — the data sources, regional cost index and assumptions behind every number.",

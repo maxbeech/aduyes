@@ -13,7 +13,8 @@ export interface LeadFields {
   notes?: string;
 }
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Reject whitespace, @, and HTML/quote metacharacters in any part of the address.
+const EMAIL_RE = /^[^\s@<>"'`]+@[^\s@<>"'`]+\.[^\s@<>"'`]{2,}$/;
 
 export function isValidEmail(email: string): boolean {
   return EMAIL_RE.test(email.trim());

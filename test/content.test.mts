@@ -118,6 +118,30 @@ const longNotes = "x".repeat(5000);
 const longMailto = buildLeadMailto({ email: "a@b.com", notes: longNotes });
 check("mailto handles long input", longMailto.length > 5000 && longMailto.startsWith("mailto:"));
 
+// Security: XSS / injection / unicode in lead fields must be URL-encoded, never raw.
+const xss = buildLeadMailto({ name: '<script>alert(1)</script>', email: "a@b.com", notes: '"><img src=x onerror=alert(1)>', zip: "'; DROP TABLE leads;--" });
+check("xss: no raw <script>", !xss.includes("<script>") && !xss.includes("</script>"));
+check("xss: no raw < or > or quote", !/[<>"]/.test(xss.replace(/^mailto:[^?]*\?/, "")));
+check("xss: script tag encoded", xss.includes("%3Cscript%3E"));
+check("xss: SQL-ish payload encoded not raw", !xss.includes("DROP TABLE leads;--") || xss.includes("DROP%20TABLE"));
+const uni = buildLeadMailto({ name: "José 北京 🏠 café", email: "a@b.com" });
+check("unicode: encoded safely", uni.startsWith("mailto:") && uni.includes("%"));
+check("isValidEmail rejects injection email", !isValidEmail('a@b.com"><script>'));
+
+// Internal-link validity: every blog CTA href must resolve to a real route.
+const validRoutes = new Set<string>(["/", "/states", "/blog", "/methodology"]);
+for (const t of ADU_TYPES) validRoutes.add(`/cost/${t.slug}`);
+for (const s of STATES) { validRoutes.add(`/${s.slug}`); for (const c of s.cities) validRoutes.add(`/${s.slug}/${citySlug(c)}`); }
+for (const p of POSTS) validRoutes.add(`/blog/${p.slug}`);
+for (const p of POSTS) {
+  for (const b of p.blocks) {
+    if (b.type === "cta") {
+      const href = b.href.split("#")[0] || "/";
+      check(`${p.slug}: CTA href "${b.href}" is a real route`, validRoutes.has(href), `unknown route ${href}`);
+    }
+  }
+}
+
 // --- Accuracy regression guards (fabricated statutes the funnel introduced) ---
 const allText = POSTS.map((p) =>
   [p.title, p.description, ...p.blocks.flatMap((b) =>
