@@ -64,5 +64,16 @@ for (const s of STATES) {
   check(`${s.slug}: no city-slug collisions`, new Set(slugs).size === slugs.length);
 }
 
+// --- Accuracy regression guards (fabricated statutes the funnel introduced) ---
+const allText = POSTS.map((p) =>
+  [p.title, p.description, ...p.blocks.flatMap((b) =>
+    b.type === "ul" ? b.items : b.type === "cta" ? [b.text] : [b.text]
+  )].join(" ")
+).join(" ").toLowerCase();
+check("no wrong WA cite 'sb 5258'", !allText.includes("sb 5258"));
+check("no fabricated Florida ADU preemption 'hb 7'", !/florida[^.]*\bhb 7\b/.test(allText) && !allText.includes("adu preemption law (hb 7)"));
+check("Florida not claimed as statewide ADU mandate", !/florida'?s (sweeping )?(2023 )?adu preemption/.test(allText));
+check("Oregon credits SB 1051", allText.includes("sb 1051"));
+
 console.log(`\n${pass} passed, ${fail} failed`);
 if (fail > 0) process.exit(1);

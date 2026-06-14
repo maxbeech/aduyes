@@ -82,13 +82,13 @@ export const STATES: StateData[] = [
     cities: ["Portland", "Salem", "Eugene", "Gresham", "Hillsboro", "Bend", "Beaverton", "Medford"],
     rules: {
       statewideLaw: true,
-      citation: "ORS 197.312(5) (HB 2001, 2019)",
+      citation: "ORS 197.312 (SB 1051, 2017; HB 2001, 2019)",
       maxDetachedSqft: null, guaranteedMinSqft: null, setbackFt: null,
-      parkingNote: "Cities cannot require additional off-street parking for an ADU under HB 2001.",
+      parkingNote: "Cities cannot require additional off-street parking for an ADU under Oregon's statewide rules.",
       ownerOccupancyRequired: false, jaduAllowed: false, approvalDays: null,
       feeWaiverSqft: null, maxHeightFt: null,
       summary:
-        "Oregon's HB 2001 requires cities over 2,500 people to allow at least one ADU per detached single-family home, subject to reasonable siting/design standards, and bars added parking requirements and owner-occupancy mandates.",
+        "Oregon's SB 1051 (2017) requires cities over 2,500 people to allow at least one ADU per detached single-family home, subject to reasonable siting/design standards, and bars added parking requirements and owner-occupancy mandates. HB 2001 (2019) expanded this to broader middle housing.",
     },
   },
   {
