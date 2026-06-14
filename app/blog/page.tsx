@@ -23,7 +23,7 @@ export default function BlogIndex() {
           <Link key={p.slug} href={`/blog/${p.slug}`} className="block rounded-2xl border border-slate-200 bg-white p-6 transition hover:border-emerald-400 hover:shadow-sm">
             <h2 className="text-lg font-semibold text-slate-900">{p.title}</h2>
             <p className="mt-2 text-sm text-slate-600">{p.description}</p>
-            <p className="mt-3 text-xs text-slate-400">{p.readingMinutes} min read</p>
+            <p className="mt-3 text-xs text-slate-500">{p.readingMinutes} min read</p>
           </Link>
         ))}
       </div>

@@ -20,7 +20,7 @@ export default function StatesIndex() {
       <Link href={`/${slug}`} className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-emerald-400 hover:shadow-sm">
         <div className="flex items-center justify-between">
           <span className="font-semibold text-slate-900">{name}</span>
-          {statewide && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">Statewide law</span>}
+          {statewide && <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">Statewide law</span>}
         </div>
         <p className="mt-1 text-sm text-slate-500">700 sq ft ADU ≈ {formatUSD(c.low)}–{formatUSD(c.high)}</p>
       </Link>

@@ -35,7 +35,7 @@ function renderBlock(block: Block, i: number) {
       );
     case "cta":
       return (
-        <Link key={i} href={block.href} className="my-6 block rounded-xl bg-emerald-50 px-5 py-4 text-center font-medium text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-100">
+        <Link key={i} href={block.href} className="my-6 block rounded-xl bg-emerald-50 px-5 py-4 text-center font-medium text-emerald-800 ring-1 ring-emerald-100 hover:bg-emerald-100">
           {block.text} →
         </Link>
       );
@@ -74,13 +74,13 @@ export default async function BlogPost({ params }: Props) {
         <span className="text-slate-700">{post.title}</span>
       </nav>
       <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">{post.title}</h1>
-      <p className="mt-2 text-sm text-slate-400">{post.readingMinutes} min read</p>
+      <p className="mt-2 text-sm text-slate-500">{post.readingMinutes} min read</p>
       <div className="mt-6">{post.blocks.map(renderBlock)}</div>
       <div className="mt-10 rounded-2xl bg-slate-900 p-6 text-center text-white">
         <p className="font-semibold">Find out what your ADU will cost</p>
-        <Link href="/" className="mt-3 inline-block rounded-xl bg-emerald-500 px-5 py-2.5 font-medium hover:bg-emerald-400">Open the calculator →</Link>
+        <Link href="/" className="mt-3 inline-block rounded-xl bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-600">Open the calculator →</Link>
       </div>
-      <p className="mt-6 text-xs leading-relaxed text-slate-400">{site.disclaimer}</p>
+      <p className="mt-6 text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
     </article>
   );
 }

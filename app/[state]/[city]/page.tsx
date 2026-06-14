@@ -77,7 +77,7 @@ export default async function CityPage({ params }: Props) {
           ["Statewide protection", r.statewideLaw ? "Yes" : "Local rules"],
         ].map(([k, v]) => (
           <div key={k} className="rounded-xl border border-slate-200 bg-white p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{k}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{k}</p>
             <p className="mt-1 text-lg font-bold text-slate-900">{v}</p>
           </div>
         ))}
@@ -107,7 +107,7 @@ export default async function CityPage({ params }: Props) {
         </div>
       </section>
 
-      <p className="text-xs leading-relaxed text-slate-400">{site.disclaimer}</p>
+      <p className="text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
     </div>
   );
 }

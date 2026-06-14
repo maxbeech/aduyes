@@ -79,7 +79,7 @@ export default async function CostTypePage({ params }: Props) {
         </div>
       </section>
 
-      <p className="text-xs leading-relaxed text-slate-400">{site.disclaimer}</p>
+      <p className="text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
     </div>
   );
 }

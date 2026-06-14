@@ -9,7 +9,7 @@ export default function NotFound() {
         The page may have moved. Try the ADU calculator, browse rules by state, or read a guide.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Link href="/" className="rounded-xl bg-emerald-600 px-5 py-2.5 font-medium text-white hover:bg-emerald-700">Open the calculator</Link>
+        <Link href="/" className="rounded-xl bg-emerald-700 px-5 py-2.5 font-medium text-white hover:bg-emerald-800">Open the calculator</Link>
         <Link href="/states" className="rounded-xl bg-white px-5 py-2.5 font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">ADU rules by state</Link>
         <Link href="/blog" className="rounded-xl bg-white px-5 py-2.5 font-medium text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">Guides</Link>
       </div>

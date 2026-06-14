@@ -38,7 +38,7 @@ export default function Home() {
 
       {/* Hero */}
       <section className="text-center">
-        <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700">
+        <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-800">
           Free ADU feasibility &amp; cost calculator
         </span>
         <h1 className="mx-auto mt-4 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
@@ -66,7 +66,7 @@ export default function Home() {
             { n: "3", t: "Go further", d: "Get a detailed feasibility report or connect with vetted ADU builders in your area." },
           ].map((s) => (
             <div key={s.n} className="rounded-2xl border border-slate-200 bg-white p-6">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-600 font-bold text-white">{s.n}</span>
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-700 font-bold text-white">{s.n}</span>
               <h3 className="mt-4 font-semibold text-slate-900">{s.t}</h3>
               <p className="mt-1 text-sm text-slate-600">{s.d}</p>
             </div>
@@ -116,7 +116,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
-        <p className="mt-4 text-center text-xs text-slate-400">✓ = statewide ADU law that limits local bans.</p>
+        <p className="mt-4 text-center text-xs text-slate-500">✓ = statewide ADU law that limits local bans.</p>
       </section>
 
       {/* Guides */}

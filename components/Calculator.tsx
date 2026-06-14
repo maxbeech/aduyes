@@ -111,7 +111,7 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
       <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-slate-900">Estimated cost in {stateName}</h2>
         <p className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-          {formatUSD(cost.low)} <span className="text-slate-400">–</span> {formatUSD(cost.high)}
+          {formatUSD(cost.low)} <span className="text-slate-500">–</span> {formatUSD(cost.high)}
         </p>
         <p className="mt-1 text-sm text-slate-500">
           ≈ {formatUSD(cost.perSqftLow)}–{formatUSD(cost.perSqftHigh)}/sq ft turnkey · midpoint {formatUSD(cost.mid)}
@@ -148,7 +148,7 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
           ))}
         </ul>
 
-        <p className="mt-3 text-xs text-slate-400">Rule basis: {feas.citation}</p>
+        <p className="mt-3 text-xs text-slate-500">Rule basis: {feas.citation}</p>
 
         {/* Rental income & ROI */}
         <div className="mt-5 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
@@ -158,13 +158,13 @@ export default function Calculator({ defaultStateSlug }: { defaultStateSlug?: st
             <div><p className="text-base font-bold text-slate-900">{roi.grossYieldPct}%</p><p className="text-xs text-slate-500">gross yield</p></div>
             <div><p className="text-base font-bold text-slate-900">{roi.paybackYears} yrs</p><p className="text-xs text-slate-500">payback</p></div>
           </div>
-          <p className="mt-2 text-xs text-slate-400">~{formatUSD(roi.annualNetRent)}/yr after a 7% vacancy allowance, before financing &amp; maintenance.</p>
+          <p className="mt-2 text-xs text-slate-500">~{formatUSD(roi.annualNetRent)}/yr after a 7% vacancy allowance, before financing &amp; maintenance.</p>
         </div>
 
-        <a href="#report" className="mt-5 block rounded-xl bg-emerald-600 px-5 py-3 text-center font-semibold text-white transition hover:bg-emerald-700">
+        <a href="#report" className="mt-5 block rounded-xl bg-emerald-700 px-5 py-3 text-center font-semibold text-white transition hover:bg-emerald-800">
           Get your detailed feasibility report →
         </a>
-        <p className="mt-3 text-xs leading-relaxed text-slate-400">{site.disclaimer}</p>
+        <p className="mt-3 text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
       </div>
     </div>
   );

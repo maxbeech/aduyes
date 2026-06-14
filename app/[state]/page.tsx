@@ -89,12 +89,12 @@ export default async function StatePage({ params }: Props) {
             ["Approval time", r.approvalDays ? `${r.approvalDays} days (ministerial)` : "Set locally"],
           ].map(([k, v]) => (
             <div key={k} className="rounded-xl border border-slate-200 bg-white p-4">
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-400">{k}</dt>
+              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">{k}</dt>
               <dd className="mt-1 font-semibold text-slate-900">{v}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-3 text-xs text-slate-400">Parking: {r.parkingNote}</p>
+        <p className="mt-3 text-xs text-slate-500">Parking: {r.parkingNote}</p>
       </section>
 
       <section>
@@ -139,7 +139,7 @@ export default async function StatePage({ params }: Props) {
         </section>
       )}
 
-      <p className="text-xs leading-relaxed text-slate-400">{site.disclaimer}</p>
+      <p className="text-xs leading-relaxed text-slate-500">{site.disclaimer}</p>
     </div>
   );
 }

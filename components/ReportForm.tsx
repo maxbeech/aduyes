@@ -70,7 +70,7 @@ export default function ReportForm() {
         </div>
       </div>
       {error && <p className="mt-2 text-sm text-amber-300" role="alert">{error}</p>}
-      <button type="submit" className="mt-4 w-full rounded-xl bg-emerald-500 px-6 py-3 font-semibold text-white transition hover:bg-emerald-400">
+      <button type="submit" className="mt-4 w-full rounded-xl bg-emerald-700 px-6 py-3 font-semibold text-white transition hover:bg-emerald-600">
         Request my report
       </button>
       {sent && (

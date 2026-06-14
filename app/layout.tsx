@@ -28,7 +28,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <header className="border-b border-slate-200 bg-white">
           <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-600 text-sm font-bold text-white">A</span>
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-emerald-700 text-sm font-bold text-white">A</span>
               <span>{site.name}</span>
             </Link>
             <nav className="flex items-center gap-5 text-sm text-slate-600">
@@ -55,7 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/blog" className="text-slate-500 hover:text-slate-900">Guides</Link>
               <Link href="/methodology" className="text-slate-500 hover:text-slate-900">Methodology</Link>
             </p>
-            <p className="mt-4 text-xs text-slate-400">© 2026 {site.name}. All rights reserved.</p>
+            <p className="mt-4 text-xs text-slate-500">© 2026 {site.name}. All rights reserved.</p>
           </div>
         </footer>
       </body>
